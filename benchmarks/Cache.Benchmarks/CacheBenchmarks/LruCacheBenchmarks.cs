@@ -15,8 +15,8 @@ public class LruBenchmarks
     private readonly string[] _overflowValues;
     
     private const int CacheSize = 10000;
-    private const int OperationCount = 20000; // Increased to ensure we test eviction
-    private const int OverflowSize = 5000; // Additional items beyond cache capacity
+    private const int OperationCount = 20000; 
+    private const int OverflowSize = 5000; 
 
     [Params(1, 2, 4, 8)]
     public int ThreadCount { get; set; }
@@ -66,6 +66,8 @@ public class LruBenchmarks
         }
 
         var tasks = new Task[ThreadCount];
+
+        // Concurrent evictions
         for (int t = 0; t < ThreadCount; t++)
         {
             int threadId = t;
