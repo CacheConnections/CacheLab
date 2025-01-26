@@ -5,11 +5,11 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D98FAB3C-38F6-46D7-B174-E5D315A070BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lru", "src\Lru\Lru.csproj", "{8291AB21-0AF7-4F08-8B81-2645A3AE0B1C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cache", "src\Cache\Cache.csproj", "{8291AB21-0AF7-4F08-8B81-2645A3AE0B1C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8FD16D86-66F3-4F60-8C7A-663444E71E56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lru.Tests", "tests\Lru.Tests\Lru.Tests.csproj", "{7A24D65E-8936-435E-9866-55B5BE65831B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cache.Tests", "tests\Cache.Tests\Cache.Tests.csproj", "{7A24D65E-8936-435E-9866-55B5BE65831B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

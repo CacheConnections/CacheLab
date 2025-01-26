@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Lru\Lru.csproj" />
+    <ProjectReference Include="..\..\src\Cache\Cache.csproj" />
   </ItemGroup>
 
 </Project>

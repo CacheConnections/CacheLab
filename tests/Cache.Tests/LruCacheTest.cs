@@ -1,4 +1,6 @@
-﻿namespace Lru.Tests;
+﻿using Cache.Caches;
+
+namespace Cache.Tests;
 
 public class LruCacheTests 
 {

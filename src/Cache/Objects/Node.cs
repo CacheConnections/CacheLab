@@ -1,7 +1,7 @@
-namespace Lru;
+namespace Cache.Objects;
 
 /// <summary>
-/// Node represents a node in the doubly linked list of the LruCache
+/// A Node represents a node in the doubly linked list of the LruCache
 /// </summary>
 public class Node<T> 
 {

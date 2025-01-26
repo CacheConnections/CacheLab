@@ -1,9 +1,15 @@
-﻿namespace Lru;
+﻿using Cache.Objects;
+using Cache.Interfaces;
+
+namespace Cache.Caches;
 
 /// <summary>
-/// LruCache - string key -> T value
-/// </summary>
-public class LruCache<T> 
+/// <inheritdoc/>
+/// A least recently used cache implementation using a string as a key
+///  pointing to a generic type value. 
+///  Provides O(1) lookups, inserts and deletes
+/// /// </summary>
+public class LruCache<T> : ILruCache<T>
 {
     /// The dictionary we use for O(1) lookups
     private Dictionary<string, Node<T>> _cache;
@@ -59,10 +65,7 @@ public class LruCache<T>
         next.Prev = prev;
     }
 
-    /// <summary>
-    /// Retrieve the value in the cache by the string <paramref name="key"/>
-    /// </summary>
-    /// <param name="key">The string key to lookup</param>
+    /// <inheritdoc/>
     public T? Get(string key) 
     {
         lock (_lock) 
@@ -78,11 +81,7 @@ public class LruCache<T>
         }
     }
 
-    /// <summary>
-    /// Store the T <paramref name="val"/> with lookup string <paramref name="key"/>
-    /// </summary>
-    /// <param name="key">The string key to identify the value by in the cache</param>
-    /// <param name="val">The value of type T</param>
+    /// <inheritdoc/>
     public void Put(string key, T val)
     {
         lock(_lock)
