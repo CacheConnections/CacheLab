@@ -1,8 +1,5 @@
 # CacheLab
 
-[![CI](https://github.com/USERNAME/CacheLab/actions/workflows/ci.yml/badge.svg)](https://github.com/USERNAME/CacheLab/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/USERNAME/CacheLab/branch/main/graph/badge.svg)](https://codecov.io/gh/USERNAME/CacheLab)
-
 A high-performance .NET caching library providing various cache implementation strategies optimized for different use cases.
 
 ## 🚀 Features
