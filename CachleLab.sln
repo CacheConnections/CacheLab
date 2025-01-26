@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8FD16D86
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cache.Tests", "tests\Cache.Tests\Cache.Tests.csproj", "{7A24D65E-8936-435E-9866-55B5BE65831B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "benchmarks", "benchmarks", "{A5A41D6E-B245-4165-A657-344F73AE6EF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cache.Benchmarks", "benchmarks\Cache.Benchmarks\Cache.Benchmarks.csproj", "{534B62AA-86E8-4720-B33B-172ADC5BE8E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,9 +32,14 @@ Global
 		{7A24D65E-8936-435E-9866-55B5BE65831B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A24D65E-8936-435E-9866-55B5BE65831B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A24D65E-8936-435E-9866-55B5BE65831B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{534B62AA-86E8-4720-B33B-172ADC5BE8E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{534B62AA-86E8-4720-B33B-172ADC5BE8E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{534B62AA-86E8-4720-B33B-172ADC5BE8E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{534B62AA-86E8-4720-B33B-172ADC5BE8E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8291AB21-0AF7-4F08-8B81-2645A3AE0B1C} = {D98FAB3C-38F6-46D7-B174-E5D315A070BD}
 		{7A24D65E-8936-435E-9866-55B5BE65831B} = {8FD16D86-66F3-4F60-8C7A-663444E71E56}
+		{534B62AA-86E8-4720-B33B-172ADC5BE8E6} = {A5A41D6E-B245-4165-A657-344F73AE6EF0}
 	EndGlobalSection
 EndGlobal
