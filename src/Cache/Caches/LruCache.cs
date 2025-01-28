@@ -9,16 +9,16 @@ namespace Cache.Caches;
 ///  pointing to a generic type value. 
 ///  Provides O(1) lookups, inserts and deletes
 /// /// </summary>
-public class LruCache<T> : ILruCache<T>
+public class LruCache<TKey, TValue> : ILruCache<TKey, TValue> where TKey: notnull
 {
     /// The dictionary we use for O(1) lookups
-    private Dictionary<string, Node<T>> _cache;
+    private Dictionary<TKey, Node<TKey, TValue>> _cache;
 
     /// The head of the linked list
-    private Node<T> _head;
+    private Node<TKey, TValue> _head;
 
     /// The tail of the linked list
-    private Node<T> _tail;
+    private Node<TKey, TValue> _tail;
 
     /// The maximum capacity of the cache
     private int _capacity;
@@ -37,9 +37,9 @@ public class LruCache<T> : ILruCache<T>
             throw new ArgumentException("Capacity must be greater than 0", nameof(capacity));
         }
 
-        _cache = new Dictionary<string, Node<T>>(); 
-        _head = new Node<T>();
-        _tail = new Node<T>();
+        _cache = new Dictionary<TKey, Node<TKey, TValue>>(); 
+        _head = new Node<TKey, TValue>();
+        _tail = new Node<TKey, TValue>();
         _head.Next = _tail;
         _tail.Prev = _head;
         _capacity = capacity;
@@ -49,9 +49,9 @@ public class LruCache<T> : ILruCache<T>
     /// Adds the new node to the doubly linked list at the front 
     /// </summary>
     /// <param name="node">The new node to add to the list</param>
-    private void AddNodeToList(Node<T> node)
+    private void AddNodeToList(Node<TKey, TValue> node)
     {
-        Node<T> next  = _head.Next ?? _tail;
+        Node<TKey, TValue> next  = _head.Next ?? _tail;
         _head.Next = node;
         node.Prev = _head;
         node.Next = next;
@@ -62,18 +62,18 @@ public class LruCache<T> : ILruCache<T>
     /// Removes the last node from the list when the cache reaches capacity
     /// </summary>
     /// <param name="node">The node to remove from the list</param>
-    private void RemoveNodeFromList(Node<T> node)
+    private void RemoveNodeFromList(Node<TKey, TValue> node)
     {
-        Node<T> prev = node.Prev ?? _head; // if the previous node is null, then the current node is the head
-        Node<T> next = node.Next ?? _tail; // if the next node is null, then the current node is the tail
+        Node<TKey, TValue> prev = node.Prev ?? _head; // if the previous node is null, then the current node is the head
+        Node<TKey, TValue> next = node.Next ?? _tail; // if the next node is null, then the current node is the tail
         prev.Next = next;
         next.Prev = prev;
     }
 
     /// <inheritdoc/>
-    public T? Get(string key) 
+    public TValue? Get(TKey key) 
     {
-        if (TryGet(key, out T value))
+        if (TryGet(key, out TValue value))
         {
             return value;
         }
@@ -82,13 +82,8 @@ public class LruCache<T> : ILruCache<T>
     }
 
     /// <inheritdoc/>
-    public bool TryGet(string key, out T value)
+    public bool TryGet(TKey key, out TValue value)
     {
-        if (string.IsNullOrWhiteSpace(key))
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
-
         lock (_lock) 
         {
             if (!_cache.ContainsKey(key)) 
@@ -97,7 +92,7 @@ public class LruCache<T> : ILruCache<T>
                 return false;
             }
 
-            Node<T> node = _cache[key];
+            Node<TKey, TValue> node = _cache[key];
             RemoveNodeFromList(node);
             AddNodeToList(node);
             value = node.Val!;
@@ -106,17 +101,12 @@ public class LruCache<T> : ILruCache<T>
     }
 
     /// <inheritdoc/>
-    public void Put(string key, T val)
+    public void Put(TKey key, TValue val)
     {
-        if (string.IsNullOrWhiteSpace(key))
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
-
-        Node<T> node = new Node<T>(val, key: key);
-
         lock(_lock)
         {
+            Node<TKey, TValue> node = new Node<TKey, TValue>(val, key: key);
+
             // The node already exists in the cache, move it to the front as it is the most recently used
             if (!_cache.TryAdd(node.Key!, node)) 
             {
@@ -129,7 +119,7 @@ public class LruCache<T> : ILruCache<T>
 
             if (_cache.Count > _capacity) 
             {
-                Node<T> lruNode = _tail.Prev ?? _head;
+                Node<TKey, TValue> lruNode = _tail.Prev ?? _head;
                 RemoveNodeFromList(lruNode);
                 _cache.Remove(lruNode.Key!);
             }

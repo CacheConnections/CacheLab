@@ -8,7 +8,7 @@ namespace Cache.Benchmarks.CacheBenchmarks;
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]
 public class LruBenchmarks 
 {
-    private LruCache<string> _cache;
+    private LruCache<string, string> _cache;
     private readonly string[] _keys;
     private readonly string[] _values;
     private readonly string[] _overflowKeys;
@@ -23,7 +23,7 @@ public class LruBenchmarks
 
     public LruBenchmarks()
     {
-        _cache = new LruCache<string>(capacity: CacheSize);
+        _cache = new LruCache<string, string>(capacity: CacheSize);
         
         // Keys/values that fit within cache capacity
         _keys = Enumerable.Range(0, CacheSize).Select(i => $"key_{i}").ToArray();
@@ -37,7 +37,7 @@ public class LruBenchmarks
     [GlobalSetup]
     public void Setup()
     {
-        _cache = new LruCache<string>(capacity: CacheSize);
+        _cache = new LruCache<string, string>(capacity: CacheSize);
     }
 
     [Benchmark]
