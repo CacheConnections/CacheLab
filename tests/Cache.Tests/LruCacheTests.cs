@@ -579,8 +579,7 @@ public class LruCacheTests
         }
         catch (OutOfMemoryException)
         {
-            // Test is successful even if we run out of memory
-            // The important thing is that the cache doesn't corrupt
+            Console.WriteLine("out of memory exception when allocating large amounts of memory inside the LRU");
         }
 
         // Verify cache is still functional
