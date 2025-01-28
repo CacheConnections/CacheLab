@@ -11,25 +11,23 @@ public class LruCacheTests
     [Fact]
     public void Get_NonExistentKey_ReturnsDefault()
     {
-        var cache = new LruCache<string>(capacity: 5);
+        var cache = new LruCache<string, string>(capacity: 5);
         var result = cache.Get("nonexistent");
         Assert.Null(result);
     }
 
     [Fact]
-    public void Put_NullOrEmptyKey_DoesNothing()
+    public void Put_NullKey_ThrowsException()
     {
-        var cache = new LruCache<string>(capacity: 5);
+        var cache = new LruCache<string, string>(capacity: 5);
 
         Assert.Throws<ArgumentNullException>(() => cache.Put(null!, "value"));
-        Assert.Throws<ArgumentNullException>(() => cache.Put("", "value"));
-        Assert.Throws<ArgumentNullException>(() => cache.Put(" ", "value")); 
     }
 
     [Fact]
     public void Put_UpdateExistingKey_UpdatesValue()
     {
-        var cache = new LruCache<string>(capacity: 5);
+        var cache = new LruCache<string, string>(capacity: 5);
         cache.Put("key", "value1");
         cache.Put("key", "value2");
         
@@ -43,7 +41,7 @@ public class LruCacheTests
     [Fact]
     public void Cache_AtCapacity_EvictsLeastRecentlyUsed()
     {
-        var cache = new LruCache<int>(capacity: 3);
+        var cache = new LruCache<string, int>(capacity: 3);
         
         // Fill cache
         cache.Put("1", 1);
@@ -65,7 +63,7 @@ public class LruCacheTests
     [Fact]
     public void Cache_EvictionOrder_RespectsGetOperations()
     {
-        var cache = new LruCache<int>(capacity: 3);
+        var cache = new LruCache<string, int>(capacity: 3);
         
         // Fill cache
         cache.Put("1", 1);
@@ -93,7 +91,7 @@ public class LruCacheTests
     [Fact]
     public async Task ConcurrentOperations_MultipleThreads_MaintainsConsistency()
     {
-        var cache = new LruCache<int>(capacity: 100);
+        var cache = new LruCache<string, int>(capacity: 100);
         var tasks = new List<Task>();
         var iterations = 1000;
         var successfulGets = new ConcurrentBag<int>();
@@ -127,7 +125,7 @@ public class LruCacheTests
     [Fact]
     public async Task ConcurrentOperations_SameKey_MaintainsConsistency()
     {
-        var cache = new LruCache<int>(capacity: 10);
+        var cache = new LruCache<string, int>(capacity: 10);
         var tasks = new List<Task>();
         var iterations = 100;
         
@@ -159,7 +157,7 @@ public class LruCacheTests
     [Fact]
     public void Cache_UnderStress_HandlesRapidPutGet()
     {
-        var cache = new LruCache<int>(capacity: 2);
+        var cache = new LruCache<string, int>(capacity: 2);
         
         // Rapidly alternate between put and get
         for (int i = 0; i < 1000; i++)
@@ -176,7 +174,7 @@ public class LruCacheTests
     [InlineData(10000)]
     public void Cache_DifferentCapacities_WorksCorrectly(int capacity)
     {
-        var cache = new LruCache<int>(capacity: capacity);
+        var cache = new LruCache<string, int>(capacity: capacity);
         
         // Fill to capacity
         for (int i = 0; i < capacity; i++)
@@ -200,7 +198,7 @@ public class LruCacheTests
     [Fact]
     public void Cache_LargeValues_HandlesCorrectly()
     {
-        var cache = new LruCache<byte[]>(capacity: 3);
+        var cache = new LruCache<string, byte[]>(capacity: 3);
         var largeValue = new byte[1024 * 1024]; // 1MB
         
         // Fill with large values
@@ -224,7 +222,7 @@ public class LruCacheTests
     [Fact]
     public void Performance_RepeatedAccess_MaintainsOrder()
     {
-        var cache = new LruCache<int>(capacity: 3);
+        var cache = new LruCache<string, int>(capacity: 3);
         
         // Add initial items
         cache.Put("1", 1);
@@ -253,7 +251,7 @@ public class LruCacheTests
     [Fact]
     public void Memory_LargeObjectsAreProperlyCollected()
     {
-        var cache = new LruCache<byte[]>(capacity: 3);
+        var cache = new LruCache<string, byte[]>(capacity: 3);
         var weakRefs = new List<WeakReference>();
 
         // Create and cache large objects
@@ -277,7 +275,7 @@ public class LruCacheTests
     [Fact]
     public void Memory_CacheUnderPressure()
     {
-        var cache = new LruCache<string>(capacity: 1000);
+        var cache = new LruCache<string, string>(capacity: 1000);
         var longString = new string('x', 1000000); // 1MB string
 
         // Fill cache with large strings under memory pressure
@@ -303,11 +301,11 @@ public class LruCacheTests
     [Fact]
     public void TypeSafety_ValueTypes()
     {
-        var cache = new LruCache<int>(capacity: 3);
+        var cache = new LruCache<string, int>(capacity: 3);
         cache.Put("key", 42);
         Assert.Equal(42, cache.Get("key"));
 
-        var structCache = new LruCache<DateTime>(capacity: 3);
+        var structCache = new LruCache<string, DateTime>(capacity: 3);
         var now = DateTime.UtcNow;
         structCache.Put("time", now);
         Assert.Equal(now, structCache.Get("time"));
@@ -316,12 +314,12 @@ public class LruCacheTests
     [Fact]
     public void TypeSafety_ReferenceTypes()
     {
-        var cache = new LruCache<object>(capacity: 3);
+        var cache = new LruCache<string, object>(capacity: 3);
         var obj = new object();
         cache.Put("key", obj);
         Assert.Same(obj, cache.Get("key")); // Reference equality
 
-        var listCache = new LruCache<List<int>>(capacity: 3);
+        var listCache = new LruCache<string, List<int>>(capacity: 3);
         var list = new List<int> { 1, 2, 3 };
         listCache.Put("list", list);
         Assert.Same(list, listCache.Get("list")); // Reference equality
@@ -330,7 +328,7 @@ public class LruCacheTests
     [Fact]
     public void TypeSafety_NullableTypes()
     {
-        var cache = new LruCache<int?>(capacity: 3);
+        var cache = new LruCache<string, int?>(capacity: 3);
         cache.Put("null", null);
         cache.Put("value", 42);
 
@@ -341,7 +339,7 @@ public class LruCacheTests
     [Fact]
     public void TypeSafety_CustomTypes()
     {
-        var cache = new LruCache<CustomType>(capacity: 3);
+        var cache = new LruCache<string, CustomType>(capacity: 3);
         var custom = new CustomType { Id = 1, Name = "Test" };
         cache.Put("custom", custom);
 
@@ -367,7 +365,7 @@ public class LruCacheTests
     [InlineData(-100)]
     public void ErrorHandling_NegativeCapacity_ThrowsArgumentException(int capacity)
     {
-        Assert.Throws<ArgumentException>(() => new LruCache<int>(capacity));
+        Assert.Throws<ArgumentException>(() => new LruCache<string, int>(capacity));
     }
 
     #endregion
@@ -377,7 +375,7 @@ public class LruCacheTests
     [Fact]
     public void LoadTest_SustainedHighThroughput()
     {
-        var cache = new LruCache<int>(capacity: 10000);
+        var cache = new LruCache<string, int>(capacity: 10000);
         var sw = Stopwatch.StartNew();
         var operationCount = 1000000;
         var successfulOps = 0;
@@ -412,7 +410,7 @@ public class LruCacheTests
     [Fact]
     public async Task LoadTest_MixedWorkload()
     {
-        var cache = new LruCache<string>(capacity: 1000);
+        var cache = new LruCache<string, string>(capacity: 1000);
         var operations = new ConcurrentDictionary<int, int>();
         var random = new Random();
 
@@ -467,7 +465,7 @@ public class LruCacheTests
     [Fact]
     public async Task LoadTest_RecoveryAfterHeavyLoad()
     {
-        var cache = new LruCache<int>(capacity: 1000);
+        var cache = new LruCache<string, int>(capacity: 1000);
         var heavyLoadTask = Task.Run(() =>
         {
             Parallel.For(0, 1000000, i =>
@@ -495,8 +493,8 @@ public class LruCacheTests
     [Fact]
     public void Integration_MultipleCacheInstances()
     {
-        var cache1 = new LruCache<int>(capacity: 100);
-        var cache2 = new LruCache<int>(capacity: 100);
+        var cache1 = new LruCache<string, int>(capacity: 100);
+        var cache2 = new LruCache<string, int>(capacity: 100);
 
         // Parallel operations on both caches
         Parallel.For(0, 1000, i =>
@@ -520,7 +518,7 @@ public class LruCacheTests
     [Fact]
     public async Task Integration_CrossThreadCommunication()
     {
-        var cache = new LruCache<string>(capacity: 100);
+        var cache = new LruCache<string, string>(capacity: 100);
         var signal = new ManualResetEventSlim();
         var success = false;
 
@@ -557,7 +555,7 @@ public class LruCacheTests
     [Fact]
     public void Integration_SystemResourceConstraints()
     {
-        var cache = new LruCache<byte[]>(capacity: 100);
+        var cache = new LruCache<string, byte[]>(capacity: 100);
         var random = new Random();
         var allocated = new List<byte[]>();
 
@@ -579,7 +577,8 @@ public class LruCacheTests
         }
         catch (OutOfMemoryException)
         {
-            Console.WriteLine("out of memory exception when allocating large amounts of memory inside the LRU");
+            // Test is successful even if we run out of memory
+            // The important thing is that the cache doesn't corrupt
         }
 
         // Verify cache is still functional
@@ -589,15 +588,12 @@ public class LruCacheTests
 
     #endregion
 
-    // Value types created an issue with default returns. We need a TryGet method
-    // that will return false for value type caches when the key does not exist in the cache,
-    // but default values are valid for the use case.
     #region Value Type Handling
 
     [Fact]
     public void ValueType_CanStoreAndRetrieveZero()
     {
-        var cache = new LruCache<int>(capacity: 3);
+        var cache = new LruCache<string, int>(capacity: 3);
         cache.Put("zero", 0);
 
         // Using Get
@@ -618,7 +614,7 @@ public class LruCacheTests
     [Fact]
     public void ValueType_DistinguishBetweenDefaultAndNonExistent()
     {
-        var cache = new LruCache<int>(capacity: 3);
+        var cache = new LruCache<string, int>(capacity: 3);
         
         // Store default value (0)
         cache.Put("zero", 0);
@@ -638,9 +634,9 @@ public class LruCacheTests
     public void ValueType_HandlesAllDefaultValues()
     {
         // Test various value types with their default values
-        var intCache = new LruCache<int>(capacity: 3);
-        var dateCache = new LruCache<DateTime>(capacity: 3);
-        var boolCache = new LruCache<bool>(capacity: 3);
+        var intCache = new LruCache<string, int>(capacity: 3);
+        var dateCache = new LruCache<string, DateTime>(capacity: 3);
+        var boolCache = new LruCache<string, bool>(capacity: 3);
         
         // Store default values
         intCache.Put("default", 0);
