@@ -32,6 +32,11 @@ public class LruCache<T> : ILruCache<T>
     /// <param name="capacity>The maximum size of the cache</param>
     public LruCache(int capacity)
     {
+        if (capacity <= 0)
+        {
+            throw new ArgumentException("Capacity must be greater than 0", nameof(capacity));
+        }
+
         _cache = new Dictionary<string, Node<T>>(); 
         _head = new Node<T>();
         _tail = new Node<T>();
@@ -68,40 +73,62 @@ public class LruCache<T> : ILruCache<T>
     /// <inheritdoc/>
     public T? Get(string key) 
     {
+        if (TryGet(key, out T value))
+        {
+            return value;
+        }
+
+        return default;
+    }
+
+    /// <inheritdoc/>
+    public bool TryGet(string key, out T value)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentNullException(nameof(key));
+        }
+
         lock (_lock) 
         {
-            if (!_cache.ContainsKey(key)) {
-                return default;
+            if (!_cache.ContainsKey(key)) 
+            {
+                value = default!;
+                return false;
             }
 
             Node<T> node = _cache[key];
             RemoveNodeFromList(node);
             AddNodeToList(node);
-            return _cache[key].Val;
+            value = node.Val!;
+            return true;
         }
     }
 
     /// <inheritdoc/>
     public void Put(string key, T val)
     {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentNullException(nameof(key));
+        }
+
+        Node<T> node = new Node<T>(val, key: key);
+
         lock(_lock)
         {
-            Node<T> node = new Node<T>(val, key: key);
-
-            if (string.IsNullOrWhiteSpace(node.Key)) {
-                return;
-            }
-
             // The node already exists in the cache, move it to the front as it is the most recently used
-            if (!_cache.TryAdd(node.Key, node)) {
-                var existingNode = _cache[node.Key];
+            if (!_cache.TryAdd(node.Key!, node)) 
+            {
+                var existingNode = _cache[node.Key!];
                 RemoveNodeFromList(existingNode);
-                _cache[node.Key] = node;
+                _cache[node.Key!] = node;
             }
 
             AddNodeToList(node);
 
-            if (_cache.Count() > _capacity) {
+            if (_cache.Count > _capacity) 
+            {
                 Node<T> lruNode = _tail.Prev ?? _head;
                 RemoveNodeFromList(lruNode);
                 _cache.Remove(lruNode.Key!);
